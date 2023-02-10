@@ -4,7 +4,6 @@ import numpy as np
 from scipy.stats import pearsonr 
 import multiprocessing
 
-
 def isNum(x):
     try:
         float(x)

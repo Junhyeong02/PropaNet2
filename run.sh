@@ -27,10 +27,10 @@ else
 fi
 
 # Weighted template network construction
-python2.7 network_weight.py -nwk data/templateNetwork -exp ${expFile} -o ${resD}/intermediate_results/${prefix}.templateNetwork || exit 1
+python network_weight.py -nwk data/templateNetwork -exp ${expFile} -o ${resD}/intermediate_results/${prefix}.templateNetwork || exit 1
 
 # Extract optimal TF list
-python2.7 TF_adding_NP_noCtrl.py ${TFliFile} ${resD}/intermediate_results/${prefix}.templateNetwork ${expFile} ${seedFile} -p 10 -cond ${prefix} -outD ${resD}/intermediate_results || exit 1
+python TF_adding_NP_noCtrl.py ${TFliFile} ${resD}/intermediate_results/${prefix}.templateNetwork ${expFile} ${seedFile} -p 10 -cond ${prefix} -outD ${resD}/intermediate_results || exit 1
 
 # Extract target genes of the optimal TFs
 for ((i=1;i<=$[$n-1];i++));do
@@ -38,7 +38,7 @@ for ((i=1;i<=$[$n-1];i++));do
 done; wait
 
 # Final Result : Networks are comprised of resulting TFs/TGs
-python2.7 makeTGDesc.py ${resD}
+python makeTGDesc.py ${resD}
 
 # cd ${resD}
 # awk '{print}' *.trim|sort|uniq > ../propanet_${cond}_TFs
