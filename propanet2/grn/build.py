@@ -1,9 +1,9 @@
 import argparse
 import numpy as np
 
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
-def edgelist_to_adjmatrix(edge_list: List[Tuple[str, str]], tgt_node_list: List[str])->np.array:
+def create_adjmatrix(edge_list: List[Tuple[str, str, Optional[float]]], tgt_node_list: List[str], weighted = True)->np.array:
     adj_dict:dict = dict()
     tgt_node_set:set = set(tgt_node_list)
 
@@ -14,16 +14,21 @@ def edgelist_to_adjmatrix(edge_list: List[Tuple[str, str]], tgt_node_list: List[
         for end_node in tgt_node_list:
             adj_dict[start_node][end_node] = 0
 
-    for start, end in edge_list:
-        if start in tgt_node_set and end in tgt_node_set:
-            adj_dict[start][end] = 1
-    
+    if weighted:
+        for start, end, weight in edge_list:
+            if start in tgt_node_set and end in tgt_node_set:
+                adj_dict[start][end] = weight
+    else:
+        for start, end in edge_list:
+            if start in tgt_node_set and end in tgt_node_set:
+                adj_dict[start][end] = 1
+
     adj_matrix:list = list()
     
     for start_node in tgt_node_list:
-        adj_matrix.append(np.array(adj_dict[start_node][end_node] for end_node in tgt_node_list))
+        adj_matrix.append(list(adj_dict[start_node][end_node] for end_node in tgt_node_list))
 
-    adj_matrix:np.array = np.stack(adj_matrix, axis = 0)
+    adj_matrix:np.array = np.array(adj_matrix)
     
     return adj_matrix
 
@@ -42,7 +47,7 @@ if __name__  == "__main__":
     with open(tgt_node_file) as f:
         tgt_node_list = list(map(lambda x: x.strip(), f.readlines()))
 
-    adj_matrix = edgelist_to_adjmatrix(edge_list, tgt_node_list)
+    adj_matrix = create_adjmatrix(edge_list, tgt_node_list, weighted = False)
     
     print(adj_matrix.shape, len(tgt_node_list))
         

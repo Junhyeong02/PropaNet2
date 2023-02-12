@@ -8,7 +8,7 @@ import pandas as pd
 from torch_geometric.data import Data
 
 from grn.network import GRNnetwork
-from grn.build import edgelist_to_adjmatrix
+from grn.build import create_adjmatrix
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -24,6 +24,6 @@ if __name__ == "__main__":
     gene_exp = pd.read_csv(args.exp, sep = "\t")
 
     tgt_list = list(gene_exp["gene"])
-    adj_matrix = edgelist_to_adjmatrix(network_edge, tgt_list)
+    adj_matrix = create_adjmatrix(network_edge, tgt_list)
 
     
