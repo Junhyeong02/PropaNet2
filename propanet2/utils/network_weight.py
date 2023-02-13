@@ -34,10 +34,24 @@ if __name__ == "__main__":
 
     corr_function = pearsonr
 
-    for start, end in edge_list:
-        args_list.append((q, start, end, gene_exp.loc[start, :], gene_exp.loc[end, :], corr_function))
+    print("prepare argument list...")
+    
+    nodata = set()
 
-    print("calculate correlation coefficent")
+    for start, end in edge_list:
+        try:
+            args_list.append((q, start, end, gene_exp.loc[start, :], gene_exp.loc[end, :], corr_function))
+        except KeyError:
+            if start not in gene_exp.index:
+                nodata.add(start)
+            if end not in gene_exp.index:
+                nodata.add(end)
+            continue
+            
+    print(len(nodata))
+    print("calculate correlation coefficent...")
+
+    print(len(args_list))
     with Pool(processes=os.cpu_count()) as pool:
         with tqdm(total=len(args_list)) as pbar:
             for _ in pool.imap_unordered(calculate_corr, args_list):
